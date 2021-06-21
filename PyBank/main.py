@@ -10,17 +10,34 @@ import csv
 #Path to collect data from the csv file
 budget_csv = os.path.join("Resources", "budget_data.csv")
 
+# Lists to store data
+data = []
+total = []
+date = []
+change = []
+
 with open(budget_csv) as file:
     csvreader = csv.reader(file, delimiter=",")
     header = next(csvreader)
-
-# Calculate the total number of months by counting the rows in the csv file
-    data = []
     for row in csvreader:
+        #create data list
         data.append(row)
 
-    print(len(data))
+        #create date list
+        date.append(row[0])
 
+        # Add number of subscribers
+        total.append(int(row[1]))
+    
+    print("Financial Analysis")
+    print("------------------------------------")
+
+    for i in range(1, len(total)):
+        change.append(total[i] - total[i-1])
+   
+
+    # Calculate the total number of months by counting the rows in the csv file  
+    print(f"Total Months:  {str(len(data))}")
 
     # Calculate the net total amount of profit/losses over the entire period
     net_total = 0
@@ -28,33 +45,39 @@ with open(budget_csv) as file:
     for row in data:
         net_total += int(row[1])
 
-    print(net_total)  
+    print(f"Total:  ${str(net_total)}")
 
-    numbers = (int(row[1]) for row in csvreader)
-    total = sum(numbers)
+   # Calculate the average of changes in profit/losses
 
-    print(total)
+    avg_chng = round(sum(change) / len(change),2)
 
-    # Calculate the average of changes in profit/losses
-    pandl = []
-    for row in csvreader:
-        pandl.append(row[1])
-    
-    change=[]
-    for i in range(1, len(pandl)):
-        change.append(pandl[i] - pandl[i-1])
-        avg_chng = round(sum(change) / len(change),2)
-
-        print(change)
+    print(f"Average Change:  ${str(avg_chng)}")
 
     # Caclulate the greatest increase in profits (date and amount) over the entire period
-        max_value = max(change)
+    max_value = max(change)
+    max_dt_chng = date[change.index(max_value)+1]
 
-        print(max_value)
+    print(f"Greatest Increase in Profits:  {str(max_dt_chng)} (${str(max_value)})")
+    
+    # Calculate the greatest decrease in losses (date and amount) over the entire period 
+    min_value = min(change)
+    min_dt_chng = date[change.index(min_value)+1]
 
-    # Calculate the greatest decrease in losses (date and amount) over the entire period
-      
-        min_value = min(change)
+    print(f"Greatest Decrease in Profits:  {str(min_dt_chng)} (${str(min_value)})")
+    
+    # Set variable for output file
+output_file = os.path.join("Analysis",  "PyBank_Analysis.txt")
 
-        print(min_value)
- 
+#  Open the output file
+with open(output_file, "w") as text_file:
+    
+    # Write to text file
+    text_file.write("Financial Analysis\n")
+    text_file.write("------------------------------------\n")
+    text_file.write(f"Total Months:  {str(len(data))}\n")
+    text_file.write(f"Total:  ${str(net_total)}\n")
+    text_file.write(f"Average Change:  ${str(avg_chng)}\n")
+    text_file.write(f"Greatest Increase in Profits:  {str(max_dt_chng)} (${str(max_value)})\n")
+    text_file.write(f"Greatest Decrease in Profits:  {str(min_dt_chng)} (${str(min_value)})\n")
+
+
