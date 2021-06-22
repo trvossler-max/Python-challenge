@@ -9,94 +9,67 @@ import csv
 #Path to collect data from the csv file
 election_csv = os.path.join("Resources", "election_data.csv")
 
-# Lists to store data
+# Lists and dictionaries to store data
 data = []
-candidate = [] 
+candidates = [] 
 all_candidates = []
-date = []
-change = []
 
 polldict = {}
+polldict_percentages = {}
 
 with open(election_csv) as file:
     csvreader = csv.reader(file, delimiter=",")
     header = next(csvreader)
     for row in csvreader:
 
-    #create data list
+        #create data list
         data.append(row)
 
-    #create list of candidate names from every row
+        #create list of candidate names from every row
         all_candidates.append(row[2])
 
-    #create candidate list
-        if row[2] not in candidate:
-            candidate.append(row[2])
+        #create candidate list and print to view complete list of unique candidates
+        if row[2] not in candidates:
+            candidates.append(row[2])       
 
-    #create dictionary
-        polldict = {(row[2]):(row[1])}
-
+    for candidate in candidates:
+        polldict[candidate] = int(all_candidates.count(candidate))
+        polldict_percentages[candidate] = polldict[candidate] / len(all_candidates)
 
     #declare variables
-    khan_votes = int(all_candidates.count("Khan"))
-    correy_votes = int(all_candidates.count("Correy"))
-    li_votes = int(all_candidates.count("Li"))
-    otooley_votes = int(all_candidates.count("O'Tooley"))
-    all_votes = int(len(data))
+    # khan_votes = int(all_candidates.count("Khan"))
+    # correy_votes = int(all_candidates.count("Correy"))
+    # li_votes = int(all_candidates.count("Li"))
+    # otooley_votes = int(all_candidates.count("O'Tooley"))
+    # all_votes = int(len(data))
 
-    #calcluate percentages
-    khan_percentage = (khan_votes/all_votes)
-    correy_percentage = (correy_votes/all_votes)
-    li_percentage = (li_votes/all_votes)
-    otooley_percentage = (otooley_votes/all_votes)
+election_results =f"""Election Results
+-------------------------
+Total Votes: {len(all_candidates)}
+-------------------------
+Khan: {polldict_percentages["Khan"]:.3%}% ({polldict["Khan"]})
+Correy: {polldict_percentages["Correy"]:.3%}% ({polldict["Correy"]})
+Li: {polldict_percentages["Li"]:.3%}% ({polldict["Li"]})
+O'Tooley: {polldict_percentages["O'Tooley"]:.3%}% ({polldict["O'Tooley"]})
+-------------------------
+Winner: Khan
+-------------------------"""
 
-    v=list(polldict.values())
-    k=list(polldict.keys()) 
-    m=max(polldict, key=polldict.get) 
+#Print to terminal
+print(election_results)
 
-    #create a complete list of candidates
-    #print(candidate)
+# print(type(election_results))
+# print(type(polldict_percentages))
 
-    #Calculate total votes for each candidate based on using the dictionary
-    #max_value=0
-    #winner = ""
-    #for i in polldict:
-        #votes=polldict[i]
-        #if votes > max_value:
-            #max_value = votes
-            #winner = i
-    print("Election Results")        
-    print("-------------------------------------------")
-    print(f"Total Votes:  {(all_votes)}")
-    print('-------------------------------------------')
-    print(f"Khan:  {(khan_percentage):.3%} ({(khan_votes)})")
-    print(f"Correy:  {(correy_percentage):.3%} ({(correy_votes)})")
-    print(f"Li:  {(li_percentage):.3%} ({(li_votes)})")
-    print(f"O'tooley:  {(otooley_percentage):.3%} ({(otooley_votes)})")
-    print("-------------------------------------------")
-    print("Winner:  Khan")
-    print("-------------------------------------------")
-
-#Write to text file
-
-    # Set variable for output file
+# Set variable for output file
 output_file = os.path.join("Analysis",  "PyPoll_Analysis.txt")
 
 #  Open the output file
 with open(output_file, "w") as text_file:
 
 #Write to text file
-    text_file.write("Election Results\n")        
-    text_file.write("-------------------------------------------\n")
-    text_file.write(f"Total Votes:  {(all_votes)}\n")
-    text_file.write('-------------------------------------------\n')
-    text_file.write(f"Khan:  {(khan_percentage):.3%} ({(khan_votes)})\n")
-    text_file.write(f"Correy:  {(correy_percentage):.3%} ({(correy_votes)})\n")
-    text_file.write(f"Li:  {(li_percentage):.3%} ({(li_votes)})\n")
-    text_file.write(f"O'tooley:  {(otooley_percentage):.3%} ({(otooley_votes)})\n")
-    text_file.write("-------------------------------------------\n")
-    text_file.write("Winner:  Khan\n")
-    text_file.write("-------------------------------------------\n")
+    text_file.write(election_results)        
+
 
 
 
