@@ -34,42 +34,69 @@ with open(election_csv) as file:
             candidate.append(row[2])
 
     #create dictionary
-        polldict = {(row[0]):(row[2])}
+        polldict = {(row[2]):(row[1])}
 
 
-    #declare 
-        v=list(polldict.values())
-        k=list(polldict.keys()) 
-        m=max(polldict, key=polldict.get) 
+    #declare variables
+    khan_votes = int(all_candidates.count("Khan"))
+    correy_votes = int(all_candidates.count("Correy"))
+    li_votes = int(all_candidates.count("Li"))
+    otooley_votes = int(all_candidates.count("O'Tooley"))
+    all_votes = int(len(data))
 
-    #print dictionary values
-    
-    print(m)
+    #calcluate percentages
+    khan_percentage = (khan_votes/all_votes)
+    correy_percentage = (correy_votes/all_votes)
+    li_percentage = (li_votes/all_votes)
+    otooley_percentage = (otooley_votes/all_votes)
 
-    #calculate total number of votes
-    print(f"Total Votes:  {str(len(data))}")
+    v=list(polldict.values())
+    k=list(polldict.keys()) 
+    m=max(polldict, key=polldict.get) 
 
     #create a complete list of candidates
-    print(candidate)
-
-    #Calculate total votes for each candidate
-    print(all_candidates.count("Correy"))
-    print(all_candidates.count("Khan"))
-    print(all_candidates.count("Li"))
-    print(all_candidates.count("O'Tooley"))
-
-    print(f"Greatest Decrease in Profits:  {str(min_dt_chng)} (${str(min_value)})")
+    #print(candidate)
 
     #Calculate total votes for each candidate based on using the dictionary
-    max_value=0
-    winner = ""
-    for i in polldict:
-        votes=polldict[i]
-        if int(votes) > max_value:
-            max_value = votes
-            winner = i
+    #max_value=0
+    #winner = ""
+    #for i in polldict:
+        #votes=polldict[i]
+        #if votes > max_value:
+            #max_value = votes
+            #winner = i
+    print("Election Results")        
+    print("-------------------------------------------")
+    print(f"Total Votes:  {(all_votes)}")
     print('-------------------------------------------')
-    print(f'Winner:         {i}')
-    print('-------------------------------------------')
+    print(f"Khan:  {(khan_percentage):.3%} ({(khan_votes)})")
+    print(f"Correy:  {(correy_percentage):.3%} ({(correy_votes)})")
+    print(f"Li:  {(li_percentage):.3%} ({(li_votes)})")
+    print(f"O'tooley:  {(otooley_percentage):.3%} ({(otooley_votes)})")
+    print("-------------------------------------------")
+    print("Winner:  Khan")
+    print("-------------------------------------------")
+
+#Write to text file
+
+    # Set variable for output file
+output_file = os.path.join("Analysis",  "PyPoll_Analysis.txt")
+
+#  Open the output file
+with open(output_file, "w") as text_file:
+
+#Write to text file
+    text_file.write("Election Results\n")        
+    text_file.write("-------------------------------------------\n")
+    text_file.write(f"Total Votes:  {(all_votes)}\n")
+    text_file.write('-------------------------------------------\n')
+    text_file.write(f"Khan:  {(khan_percentage):.3%} ({(khan_votes)})\n")
+    text_file.write(f"Correy:  {(correy_percentage):.3%} ({(correy_votes)})\n")
+    text_file.write(f"Li:  {(li_percentage):.3%} ({(li_votes)})\n")
+    text_file.write(f"O'tooley:  {(otooley_percentage):.3%} ({(otooley_votes)})\n")
+    text_file.write("-------------------------------------------\n")
+    text_file.write("Winner:  Khan\n")
+    text_file.write("-------------------------------------------\n")
+
 
 
