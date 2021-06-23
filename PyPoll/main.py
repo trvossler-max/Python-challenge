@@ -10,12 +10,13 @@ import csv
 election_csv = os.path.join("Resources", "election_data.csv")
 
 # Lists and dictionaries to store data
+# Lists and dictionaries to store data
 data = []
-candidates = [] 
-all_candidates = []
+unique_candidates = [] 
+candidate_votes = []
 
-polldict = {}
-polldict_percentages = {}
+candidates = {}
+candidate_percentages = {}
 
 with open(election_csv) as file:
     csvreader = csv.reader(file, delimiter=",")
@@ -26,40 +27,47 @@ with open(election_csv) as file:
         data.append(row)
 
         #create list of candidate names from every row
-        all_candidates.append(row[2])
+        candidate_votes.append(row[2])
 
-        #create candidate list and print to view complete list of unique candidates
-        if row[2] not in candidates:
-            candidates.append(row[2])       
+    #create candidate list and print to view complete list of unique candidates
+    unique_candidates = set(candidate_votes)
 
-    for candidate in candidates:
-        polldict[candidate] = int(all_candidates.count(candidate))
-        polldict_percentages[candidate] = polldict[candidate] / len(all_candidates)
+    for candidate in unique_candidates:
+        candidates[candidate] = 0
 
-    #declare variables
-    # khan_votes = int(all_candidates.count("Khan"))
-    # correy_votes = int(all_candidates.count("Correy"))
-    # li_votes = int(all_candidates.count("Li"))
-    # otooley_votes = int(all_candidates.count("O'Tooley"))
-    # all_votes = int(len(data))
+    #Calculate total votes
+    total_votes = len(data)
+    
+    #calculate the number of votes for each candidate
+    for vote in candidate_votes:
+        candidates[vote] += 1
 
-election_results =f"""Election Results
--------------------------
-Total Votes: {len(all_candidates)}
--------------------------
-Khan: {polldict_percentages["Khan"]:.3%}% ({polldict["Khan"]})
-Correy: {polldict_percentages["Correy"]:.3%}% ({polldict["Correy"]})
-Li: {polldict_percentages["Li"]:.3%}% ({polldict["Li"]})
-O'Tooley: {polldict_percentages["O'Tooley"]:.3%}% ({polldict["O'Tooley"]})
--------------------------
-Winner: Khan
--------------------------"""
+    #Calculate the vote percentage for each candidate
+    for candidate in unique_candidates:
+        vote_count = candidates[candidate]
+        candidate_percentages[candidate] = '{0:.3f}'.format(vote_count/total_votes *100)
 
-#Print to terminal
-print(election_results)
+    #Identify the winner
+    winner_name = ""
+    winner_votes = 0
+    winner_pct = 0
+    for key, value in candidates.items():
+        if value > winner_votes:
+            winner_votes = value
+            winner_name = key
+            winner_percent = candidate_percentages[key]
 
-# print(type(election_results))
-# print(type(polldict_percentages))
+#print results
+print("Election Results")
+print("------------------------")
+print(f"Total Votes:  {total_votes}")
+print("------------------------")
+for w in sorted(candidates, key=candidates.get, reverse=True):
+    print(f"{w}: {candidate_percentages[w]}% ({candidates[w]})")
+print("------------------------")
+print(f"Winner: {winner_name}")
+print("------------------------")
+
 
 # Set variable for output file
 output_file = os.path.join("Analysis",  "PyPoll_Analysis.txt")
@@ -68,8 +76,16 @@ output_file = os.path.join("Analysis",  "PyPoll_Analysis.txt")
 with open(output_file, "w") as text_file:
 
 #Write to text file
-    text_file.write(election_results)        
 
+    text_file.write("Election Results\n")
+    text_file.write("------------------------\n")
+    text_file.write(f"Total Votes:  {total_votes}\n")
+    text_file.write("------------------------\n")
+    for w in sorted(candidates, key=candidates.get, reverse=True):
+        text_file.write(f"{w}: {candidate_percentages[w]}% ({candidates[w]})\n")
+    text_file.write("------------------------\n")
+    text_file.write(f"Winner: {winner_name}\n")
+    text_file.write("------------------------\n")
 
 
 
